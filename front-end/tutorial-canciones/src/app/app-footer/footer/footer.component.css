@@ -1,4 +1,7 @@
-.footer {
-  height: 25px;
+
+
+.sticky-footer {
+  position: sticky;
+  top: 100%
 
 }
