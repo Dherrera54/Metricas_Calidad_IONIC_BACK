@@ -24,9 +24,10 @@ export class HeaderComponent implements OnInit {
     else if(menu === "album"){
       this.routerPath.navigate([`/albumes/${userId}/${token}`])
     }
-    else{
+    else if(menu === "cancion"){
       this.routerPath.navigate([`/canciones/${userId}/${token}`])
     }
+
   }
 
 }
