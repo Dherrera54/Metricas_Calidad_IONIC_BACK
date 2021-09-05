@@ -10,13 +10,19 @@ albumes_canciones = db.Table('album_cancion',
     db.Column('album_id', db.Integer, db.ForeignKey('album.id'), primary_key = True),
     db.Column('cancion_id', db.Integer, db.ForeignKey('cancion.id'), primary_key = True))
 
+cancionescompartidas_usuarios = db.Table('cancion_usuario',
+    db.Column('usuario_id', db.Integer, db.ForeignKey('usuario.id'), primary_key = True),
+    db.Column('cancion_id', db.Integer, db.ForeignKey('cancion.id'), primary_key = True))
+
 class Cancion(db.Model):
     id = db.Column(db.Integer, primary_key = True)
     titulo = db.Column(db.String(128))
     minutos = db.Column(db.Integer)
     segundos = db.Column(db.Integer)
     interprete = db.Column(db.String(128))
+    usuario = db.Column(db.Integer, db.ForeignKey("usuario.id"))
     albumes = db.relationship('Album', secondary = 'album_cancion', back_populates="canciones")
+    usuarios = db.relationship('Usuario', secondary = 'cancion_usuario', back_populates="cancionescompartidas")
 
 class Medio(enum.Enum):
    DISCO = 1
@@ -36,7 +42,9 @@ class Usuario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nombre = db.Column(db.String(50))
     contrasena = db.Column(db.String(50))
+    canciones = db.relationship('Cancion', cascade='all, delete, delete-orphan')
     albumes = db.relationship('Album', cascade='all, delete, delete-orphan')
+    cancionescompartidas = db.relationship('Cancion', secondary = 'cancion_usuario', back_populates="usuarios")
 
 class EnumADiccionario(fields.Field):
     def _serialize(self, value, attr, obj, **kwargs):

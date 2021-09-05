@@ -20,6 +20,7 @@ class VistaCanciones(Resource):
     def get(self):
         return [cancion_schema.dump(ca) for ca in Cancion.query.all()]
 
+
 class VistaCancion(Resource):
 
     def get(self, id_cancion):
@@ -99,6 +100,28 @@ class VistaAlbumsUsuario(Resource):
         usuario = Usuario.query.get_or_404(id_usuario)
         return [album_schema.dump(al) for al in usuario.albumes]
 
+class VistaCancionesUsuario(Resource):
+
+    @jwt_required()
+    def post(self, id_usuario):
+        nueva_cancion = Cancion(titulo=request.json["titulo"], minutos=request.json["minutos"], segundos=request.json["segundos"], interprete=request.json["interprete"])
+        usuario = Usuario.query.get_or_404(id_usuario)
+        usuario.canciones.append(nueva_cancion)
+
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            return 'El usuario ya tiene una cancion con dicho nombre',409
+
+        return cancion_schema.dump(nueva_cancion)
+
+    @jwt_required()
+    def get(self, id_usuario):
+        usuario = Usuario.query.get_or_404(id_usuario)
+        return [cancion_schema.dump(ca) for ca in usuario.canciones]
+
+
 class VistaCancionesAlbum(Resource):
 
     def post(self, id_album):
@@ -142,3 +165,30 @@ class VistaAlbum(Resource):
         db.session.commit()
         return '',204
 
+class VistaUsuariosCancionCompartida(Resource):
+
+    def post(self, id_cancion):
+        cancion = Cancion.query.get_or_404(id_cancion)
+        
+        if "id_usuario" in request.json.keys():
+            
+            nuevo_usuario = Usuario.query.get(request.json["id_usuario"])
+            if nuevo_usuario is not None:
+                cancion.usuarios.append(nuevo_usuario)
+                db.session.commit()
+            else:
+                return 'Usuario erróneo',404
+        else: 
+            nuevo_usuario = Usuario(nombre=request.json["nombre"], contrasena=request.json["contrasena"])
+            cancion.usuarios.append(nuevo_usuario)
+        db.session.commit()
+        return usuario_schema.dump(nuevo_usuario)
+       
+    def get(self, id_cancion):
+        cancion = Cancion.query.get_or_404(id_cancion)
+        return [usuario_schema.dump(us) for us in cancion.usuarios]
+
+class VistaCancionesCompartidasUsuario(Resource):
+    def get(self, id_usuario):
+        usuario = Usuario.query.get_or_404(id_usuario)
+        return [cancion_schema.dump(ca) for ca in usuario.cancionescompartidas]
