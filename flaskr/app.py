@@ -1,18 +1,13 @@
-from flask import Flask
+from flaskr import create_app
 from flask_restful import Api
 from .modelos import db
-from .vistas import VistaCanciones, VistaCancionesCompartidasUsuario, VistaCancion, VistaSignIn, VistaAlbum, VistaAlbumsUsuario, VistaCancionesAlbum, VistaLogIn, VistaAlbumesCanciones, VistaCancionesUsuario, VistaUsuariosCancionCompartida
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS, cross_origin
-
-
-def create_app(config_name):
-    app = Flask(__name__)
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tutorial_canciones.db'
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    app.config['JWT_SECRET_KEY'] = 'frase-secreta'
-    app.config['PROPAGATE_EXCEPTIONS'] = True
-    return app
+from .vistas import VistaCanciones, VistaCancionesCompartidasUsuario, VistaCancion, VistaSignIn, VistaAlbum, \
+    VistaAlbumsUsuario, VistaCancionesAlbum, VistaLogIn, VistaAlbumesCanciones, VistaCancionesUsuario, \
+    VistaUsuariosCancionCompartida
+from flask_jwt_extended import JWTManager
+from flask_cors import CORS, cross_origin
 
 app = create_app('default')
 app_context = app.app_context()
