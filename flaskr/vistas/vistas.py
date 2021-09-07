@@ -21,6 +21,10 @@ class VistaCanciones(Resource):
     def get(self):
         return [cancion_schema.dump(ca) for ca in Cancion.query.all()]
 
+class VistaUsuarios(Resource):
+
+    def get(self):
+        return [usuario_schema.dump(us) for us in Usuario.query.all()]
 
 class VistaCancion(Resource):
 

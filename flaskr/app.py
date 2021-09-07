@@ -5,7 +5,7 @@ from flask_jwt_extended import JWTManager
 from flask_cors import CORS, cross_origin
 from .vistas import VistaCanciones, VistaCancionesCompartidasUsuario, VistaCancion, VistaSignIn, VistaAlbum, \
     VistaAlbumsUsuario, VistaCancionesAlbum, VistaLogIn, VistaAlbumesCanciones, VistaCancionesUsuario, \
-    VistaUsuariosCancionCompartida
+    VistaUsuariosCancionCompartida, VistaUsuarios
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS, cross_origin
 
@@ -19,6 +19,7 @@ cors = CORS(app)
 
 api = Api(app)
 api.add_resource(VistaCanciones, '/canciones')
+api.add_resource(VistaUsuarios, '/usuarios')
 api.add_resource(VistaCancion, '/cancion/<int:id_cancion>')
 api.add_resource(VistaAlbumesCanciones, '/cancion/<int:id_cancion>/albumes')
 api.add_resource(VistaSignIn, '/signin')
