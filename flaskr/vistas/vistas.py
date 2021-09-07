@@ -9,16 +9,26 @@ usuario_schema = UsuarioSchema()
 album_schema = AlbumSchema()
 
 
-class VistaCanciones(Resource):
+class VistaCancionesUsuario(Resource):
 
-    def post(self):
+    @jwt_required()
+    def post(self, id_usuario):
         nueva_cancion = Cancion(titulo=request.json["titulo"], minutos=request.json["minutos"], segundos=request.json["segundos"], interprete=request.json["interprete"])
-        db.session.add(nueva_cancion)
-        db.session.commit()
+        usuario = Usuario.query.get_or_404(id_usuario)
+        usuario.canciones.append(nueva_cancion)
+        try:
+            db.session.commit()
+        except IntegrityError:
+            db.session.rollback()
+            return 'El usuario ya tiene una cancion con dicho nombre',409
+
         return cancion_schema.dump(nueva_cancion)
 
-    def get(self):
-        return [cancion_schema.dump(ca) for ca in Cancion.query.all()]
+
+    @jwt_required()
+    def get(self, id_usuario):
+        usuario = Usuario.query.get_or_404(id_usuario)
+        return [cancion_schema.dump(ca) for ca in usuario.canciones]
 
 class VistaCancion(Resource):
 
