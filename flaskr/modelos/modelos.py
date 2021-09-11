@@ -16,6 +16,7 @@ class Cancion(db.Model):
     minutos = db.Column(db.Integer)
     segundos = db.Column(db.Integer)
     interprete = db.Column(db.String(128))
+    usuario = db.Column(db.Integer, db.ForeignKey("usuario.id"))
     albumes = db.relationship('Album', secondary = 'album_cancion', back_populates="canciones")
 
 class Medio(enum.Enum):
@@ -37,6 +38,7 @@ class Usuario(db.Model):
     nombre = db.Column(db.String(50))
     contrasena = db.Column(db.String(50))
     albumes = db.relationship('Album', cascade='all, delete, delete-orphan')
+    canciones = db.relationship('Cancion', cascade='all, delete, delete-orphan')
 
 class EnumADiccionario(fields.Field):
     def _serialize(self, value, attr, obj, **kwargs):
