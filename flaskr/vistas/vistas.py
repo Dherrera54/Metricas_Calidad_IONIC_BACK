@@ -88,6 +88,14 @@ class VistaLogIn(Resource):
             token_de_acceso = create_access_token(identity = usuario.id)
             return {"mensaje":"Inicio de sesión exitoso", "token": token_de_acceso}
 
+class VistaUsuario(Resource):
+
+    @jwt_required()
+    def get(self,id_usuario):
+        usuario = Usuario.query.get_or_404(id_usuario)
+        return usuario_schema.dump(usuario)
+
+
 class VistaAlbumsUsuario(Resource):
 
     @jwt_required()
