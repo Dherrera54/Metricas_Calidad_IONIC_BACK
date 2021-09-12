@@ -202,6 +202,8 @@ class VistaAlbum(Resource):
         db.session.commit()
         return '', 204
 
+# Se agrega la vista UsuariosCancionCompartida como parte del relese para Sprint 1
+# En esta vista se puede agregar o listar los usuarios a los que se comparte una cancion
 
 class VistaUsuariosCancionCompartida(Resource):
 
@@ -227,6 +229,8 @@ class VistaUsuariosCancionCompartida(Resource):
         cancion = Cancion.query.get_or_404(id_cancion)
         return [usuario_schema.dump(us) for us in cancion.usuarios]
 
+# Se agrega la vista CancionesCompartidasUsuario como parte del relese para Sprint 1
+# En esta vista se puede listar todas las canciones que se han compartido con el usuario
 
 class VistaCancionesCompartidasUsuario(Resource):
     def get(self, id_usuario):
