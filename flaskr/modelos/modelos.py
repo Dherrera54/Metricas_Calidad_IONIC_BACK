@@ -25,6 +25,13 @@ class Cancion(db.Model):
     usuario = db.Column(db.Integer, db.ForeignKey("usuario.id"))
     albumes = db.relationship('Album', secondary='album_cancion', back_populates="canciones")
     usuarios = db.relationship('Usuario', secondary='cancion_usuario', back_populates="cancionescompartidas")
+    comentarios = db.relationship('Comentario', cascade='all, delete, delete-orphan')
+
+class Comentario(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    comentario = db.Column(db.String(255))
+    usuario = db.Column(db.Integer, db.ForeignKey("usuario.id"))
+    cancion = db.Column(db.Integer, db.ForeignKey("cancion.id"))
 
 
 class Medio(enum.Enum):
@@ -49,6 +56,7 @@ class Usuario(db.Model):
     contrasena = db.Column(db.String(50))
     canciones = db.relationship('Cancion', cascade='all, delete, delete-orphan')
     albumes = db.relationship('Album', cascade='all, delete, delete-orphan')
+    comentarios = db.relationship('Comentario', cascade='all, delete, delete-orphan')
     cancionescompartidas = db.relationship('Cancion', secondary='cancion_usuario', back_populates="usuarios")
 
 class EnumADiccionario(fields.Field):
@@ -77,5 +85,11 @@ class AlbumSchema(SQLAlchemyAutoSchema):
 class UsuarioSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Usuario
+        include_relationships = True
+        load_instance = True
+
+class ComentarioSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Comentario
         include_relationships = True
         load_instance = True
