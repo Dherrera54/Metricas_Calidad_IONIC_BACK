@@ -219,10 +219,12 @@ class VistaCancionesCompartidasUsuario(Resource):
 class VistaComentariosCancionesUsuario(Resource):
        
     @jwt_required()
-    def post(self, id_cancion):
+    def post(self, id_cancion, id_usuario):
         nuevo_comentario = Comentario(comentario=request.json["comentario"])
+        usuario=Usuario.query.get_or_404(id_usuario)
         cancion = Cancion.query.get_or_404(id_cancion)
         cancion.comentarios.append(nuevo_comentario)
+        usuario.comentarios.append(nuevo_comentario)
         db.session.commit()
         return cancion_schema.dump(nuevo_comentario)
 

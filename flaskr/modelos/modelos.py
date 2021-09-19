@@ -30,6 +30,7 @@ class Cancion(db.Model):
 class Comentario(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     comentario = db.Column(db.String(255))
+    usuario = db.Column(db.Integer, db.ForeignKey("usuario.id"))
     cancion = db.Column(db.Integer, db.ForeignKey("cancion.id"))
 
 
@@ -55,6 +56,7 @@ class Usuario(db.Model):
     contrasena = db.Column(db.String(50))
     canciones = db.relationship('Cancion', cascade='all, delete, delete-orphan')
     albumes = db.relationship('Album', cascade='all, delete, delete-orphan')
+    comentarios = db.relationship('Comentario', cascade='all, delete, delete-orphan')
     cancionescompartidas = db.relationship('Cancion', secondary='cancion_usuario', back_populates="usuarios")
 
 class EnumADiccionario(fields.Field):
