@@ -90,6 +90,6 @@ class UsuarioSchema(SQLAlchemyAutoSchema):
 
 class NotificacionSchema(SQLAlchemyAutoSchema):
     class Meta:
-        model = Usuario
+        model = Notificacion
         include_relationships = True
         load_instance = True

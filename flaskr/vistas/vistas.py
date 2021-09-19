@@ -212,7 +212,7 @@ class VistaUsuariosCancionCompartida(Resource):
     def post(self, id_cancion):
         cancion = Cancion.query.get_or_404(id_cancion)
         idUser = request.json["idUser"]
-        usuario_cancion = Usuario.query_or_404(idUser)
+        usuario_cancion = Usuario.query.filter(Usuario.id == idUser).first()
         
         amigos = request.json["amigos"]
         nombres = getNombres(amigos)
@@ -224,15 +224,19 @@ class VistaUsuariosCancionCompartida(Resource):
                 return "Uno de los usuarios no existe", 404
 
         n_mensaje = "El usuario " + usuario_cancion.nombre + " te ha compartido la cancion " + cancion.titulo
+        print (n_mensaje)
         n_fecha = datetime.now()
-        nueva_notificacion = Notificacion(mensaje=n_mensaje, fecha=n_fecha, mensaje_leido=False)
+        #nueva_notificacion = Notificacion(mensaje=n_mensaje, fecha=n_fecha, mensaje_leido=False)
+        #print(nueva_notificacion.fecha, nueva_notificacion.mensaje_leido)
 
         for n in nombres:
             usuario = Usuario.query.filter(Usuario.nombre == n).first()
+            nueva_notificacion = Notificacion(mensaje=n_mensaje, fecha=n_fecha, mensaje_leido=False)
             usuario.notificaciones.append(nueva_notificacion)
+            db.session.commit()
             cancion.usuarios.append(usuario)
         db.session.commit()
-        return "La cancion se compartio con exito", 200
+        return "La cancion se compartio con exito" + n_mensaje, 200
 
     def get(self, id_cancion):
         cancion = Cancion.query.get_or_404(id_cancion)
