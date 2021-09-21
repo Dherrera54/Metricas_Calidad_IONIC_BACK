@@ -228,8 +228,12 @@ class VistaComentariosCancionesUsuario(Resource):
         db.session.commit()
         return cancion_schema.dump(nuevo_comentario)
 
-    @jwt_required()
+
+class VistaComentariosDeCancion(Resource):
+   
     def get(self, id_cancion):
         cancion = Cancion.query.get_or_404(id_cancion)
         return [comentario_schema.dump(ca) for ca in cancion.comentarios]
+
+
 
