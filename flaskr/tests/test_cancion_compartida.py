@@ -45,3 +45,4 @@ class VistasTest(unittest.TestCase):
         cancion_compartida = Cancion.query.filter(Cancion.titulo == 'prueba1').first()
         usuario_compartido = cancion_compartida.usuarios[0]
         self.assertEqual(usuario_compartido.nombre, u2.nombre)
+
