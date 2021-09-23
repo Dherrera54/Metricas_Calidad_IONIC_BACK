@@ -209,6 +209,26 @@ class VistaAlbum(Resource):
 # Se actualiza la vista UsuariosCancionCompartida comp parte del Sprint 2
 # En esta actualizacion de crean las notificaciones para los usuarios con los que se ha compartido la cancion
 
+def usuarioNoExiste(nombres):
+    for n in nombres:
+        usuario = Usuario.query.filter(Usuario.nombre == n).first()
+        if usuario is None:
+         return True
+    return False
+
+def compartirYNotificar(usuario_cancion, cancion, nombres_amigos):
+    n_mensaje = "El usuario " + usuario_cancion.nombre + " te ha compartido la cancion " + cancion.titulo
+    n_fecha = datetime.now()
+    for n in nombres_amigos:
+        usuario = Usuario.query.filter(Usuario.nombre == n).first()
+        nueva_notificacion = Notificacion(mensaje=n_mensaje, fecha=n_fecha, cancioncompartida=cancion.id, mensaje_leido=False)
+        usuario.notificaciones.append(nueva_notificacion)
+        db.session.commit()
+        cancion.usuarios.append(usuario)
+    db.session.commit()
+    return "La cancion se compartio y se notifico a los usuarios con exito"
+
+
 class VistaUsuariosCancionCompartida(Resource):
 
     def post(self, id_cancion):
@@ -217,24 +237,10 @@ class VistaUsuariosCancionCompartida(Resource):
         usuario_cancion = Usuario.query.filter(Usuario.id == idUser).first() 
         amigos = request.json["amigos"]
         nombres = getNombres(amigos)
-
-        for n in nombres:
-            usuario = Usuario.query.filter(Usuario.nombre == n).first()
-            db.session.commit()
-            if usuario is None:
-                return "Uno de los usuarios no existe", 404
-
-        n_mensaje = "El usuario " + usuario_cancion.nombre + " te ha compartido la cancion " + cancion.titulo
-        n_fecha = datetime.now()
-
-        for n in nombres:
-            usuario = Usuario.query.filter(Usuario.nombre == n).first()
-            nueva_notificacion = Notificacion(mensaje=n_mensaje, fecha=n_fecha, cancioncompartida=id_cancion, mensaje_leido=False)
-            usuario.notificaciones.append(nueva_notificacion)
-            db.session.commit()
-            cancion.usuarios.append(usuario)
-        db.session.commit()
-        return "La cancion se compartio con exito", 200
+        if usuarioNoExiste(nombres):
+            return "Uno de los usuarios no existe", 404
+        mensaje = compartirYNotificar(usuario_cancion, cancion, nombres)
+        return mensaje, 200
 
     def get(self, id_cancion):
         cancion = Cancion.query.get_or_404(id_cancion)
