@@ -4,9 +4,8 @@ from flask_sqlalchemy import SQLAlchemy
 import sys
 from os import path
 sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
-from modelos import Usuario, db, Cancion
-
-
+from flaskr.modelos import Usuario, db, Cancion
+#from ..modelos import Usuario, db
 
 class VistasTest(unittest.TestCase):
     
@@ -33,15 +32,10 @@ class VistasTest(unittest.TestCase):
         db.drop_all()
 
     
-    def test_usuario_compartir_cancion(self):
-        c1 = Cancion(titulo='prueba1', minutos=2, segundos=5,interprete='p1')
-        u1 = Usuario(nombre='user1', contrasena='1234')
-        u2 = Usuario(nombre='user2', contrasena='1234')
-        db.session.add(u1)
-        db.session.add(u2)
-        u1.canciones.append(c1)
-        c1.usuarios.append(u2)
+    def test_crear_usuario(self):
+        user = Usuario(nombre='test', contrasena='12345')
+        db.session.add(user)
         db.session.commit()
-        cancion_compartida = Cancion.query.filter(Cancion.titulo == 'prueba1').first()
-        usuario_compartido = cancion_compartida.usuarios[0]
-        self.assertEqual(usuario_compartido.nombre, u2.nombre)
+        usuarioTest = Usuario.query.filter(Usuario.nombre == 'test').first()
+        print(usuarioTest.nombre)
+        self.assertIsNotNone(usuarioTest)

@@ -1,5 +1,5 @@
 from flask import request
-from ..modelos import db, Cancion, CancionSchema, Usuario, UsuarioSchema, Album, AlbumSchema
+from ..modelos import db, Cancion, CancionSchema, Usuario, UsuarioSchema, Album, AlbumSchema, Comentario, ComentarioSchema
 from flask_restful import Resource
 from sqlalchemy.exc import IntegrityError
 from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identity
@@ -7,10 +7,11 @@ from flask_jwt_extended import jwt_required, create_access_token, get_jwt_identi
 cancion_schema = CancionSchema()
 usuario_schema = UsuarioSchema()
 album_schema = AlbumSchema()
+comentario_schema = ComentarioSchema()
 
 def getNombres(amigos):
-    minusculas = amigos.lower()
-    sinespacios = minusculas.replace(" ","")
+    #minusculas = amigos.lower()
+    sinespacios = amigos.replace(" ","")
     nombres = sinespacios.split(',')
     return nombres
 
@@ -134,29 +135,6 @@ class VistaAlbumsUsuario(Resource):
         return [album_schema.dump(al) for al in usuario.albumes]
 
 
-class VistaCancionesUsuario(Resource):
-
-    @jwt_required()
-    def post(self, id_usuario):
-        nueva_cancion = Cancion(titulo=request.json["titulo"], minutos=request.json["minutos"],
-                                segundos=request.json["segundos"], interprete=request.json["interprete"])
-        usuario = Usuario.query.get_or_404(id_usuario)
-        usuario.canciones.append(nueva_cancion)
-
-        try:
-            db.session.commit()
-        except IntegrityError:
-            db.session.rollback()
-            return 'El usuario ya tiene una cancion con dicho nombre', 409
-
-        return cancion_schema.dump(nueva_cancion)
-
-    @jwt_required()
-    def get(self, id_usuario):
-        usuario = Usuario.query.get_or_404(id_usuario)
-        return [cancion_schema.dump(ca) for ca in usuario.canciones]
-
-
 class VistaCancionesAlbum(Resource):
 
     def post(self, id_album):
@@ -236,4 +214,26 @@ class VistaCancionesCompartidasUsuario(Resource):
     def get(self, id_usuario):
         usuario = Usuario.query.get_or_404(id_usuario)
         return [cancion_schema.dump(ca) for ca in usuario.cancionescompartidas]
+
+
+class VistaComentariosCancionesUsuario(Resource):
+       
+    @jwt_required()
+    def post(self, id_cancion, id_usuario):
+        nuevo_comentario = Comentario(comentario=request.json["comentario"])
+        usuario=Usuario.query.get_or_404(id_usuario)
+        cancion = Cancion.query.get_or_404(id_cancion)
+        cancion.comentarios.append(nuevo_comentario)
+        usuario.comentarios.append(nuevo_comentario)
+        db.session.commit()
+        return cancion_schema.dump(nuevo_comentario)
+
+
+class VistaComentariosDeCancion(Resource):
+   
+    def get(self, id_cancion):
+        cancion = Cancion.query.get_or_404(id_cancion)
+        return [comentario_schema.dump(ca) for ca in cancion.comentarios]
+
+
 
