@@ -3,7 +3,7 @@ from flask_restful import Api
 from .modelos import db
 from .vistas import  VistaCancionesUsuario, VistaCancion, VistaSignIn, VistaAlbum, VistaAlbumsUsuario, \
     VistaCancionesAlbum, VistaLogIn, VistaAlbumesCanciones, VistaUsuario, VistaCancionesCompartidasUsuario, VistaUsuariosCancionCompartida, \
-       VistaComentariosCancionesUsuario, VistaComentariosDeCancion
+       VistaComentariosCancionesUsuario, VistaComentariosDeCancion, VistaNotificacion, VistaNotificacionesUsuario
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS, cross_origin
 
@@ -27,6 +27,8 @@ api.add_resource(VistaAlbum, '/album/<int:id_album>')
 api.add_resource(VistaCancionesAlbum, '/album/<int:id_album>/canciones')
 api.add_resource(VistaUsuariosCancionCompartida, '/cancion/<int:id_cancion>/usuarios')
 api.add_resource(VistaCancionesCompartidasUsuario, '/usuario/<int:id_usuario>/cancionescompartidas')
+api.add_resource(VistaNotificacionesUsuario, '/usuario/<int:id_usuario>/notificaciones')
+api.add_resource(VistaNotificacion, '/notificacion/<int:id_notificacion>')
 api.add_resource(VistaComentariosCancionesUsuario, '/cancion/<int:id_cancion>/usuario/<int:id_usuario>/comentarios')
 api.add_resource(VistaComentariosDeCancion, '/cancion/<int:id_cancion>/comentarios')
 

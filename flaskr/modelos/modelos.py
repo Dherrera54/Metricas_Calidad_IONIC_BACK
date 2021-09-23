@@ -58,6 +58,15 @@ class Usuario(db.Model):
     albumes = db.relationship('Album', cascade='all, delete, delete-orphan')
     comentarios = db.relationship('Comentario', cascade='all, delete, delete-orphan')
     cancionescompartidas = db.relationship('Cancion', secondary='cancion_usuario', back_populates="usuarios")
+    notificaciones = db.relationship('Notificacion', cascade='all, delete, delete-orphan')
+
+class Notificacion(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    fecha = db.Column(db.DateTime)
+    mensaje = db.Column(db.String(512))
+    mensaje_leido = db.Column(db.Boolean)
+    cancioncompartida = db.Column(db.Integer)
+    usuario = db.Column(db.Integer, db.ForeignKey("usuario.id"))
 
 class EnumADiccionario(fields.Field):
     def _serialize(self, value, attr, obj, **kwargs):
@@ -85,6 +94,12 @@ class AlbumSchema(SQLAlchemyAutoSchema):
 class UsuarioSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = Usuario
+        include_relationships = True
+        load_instance = True
+
+class NotificacionSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Notificacion
         include_relationships = True
         load_instance = True
 
