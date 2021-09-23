@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 import sys
 from os import path
 sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
-from modelos import Usuario, db, Cancion, Notificacion
+from flaskr.modelos import Usuario, db, Cancion, Notificacion
 from datetime import datetime
 
 
@@ -35,6 +35,7 @@ class VistasTest(unittest.TestCase):
 
     
     def test_usuario_compartir_cancion(self):
+        print("Pruebas unitarias del feature compartir cancion")
         c1 = Cancion(titulo='prueba1', minutos=2, segundos=5,interprete='p1')
         u1 = Usuario(nombre='user1', contrasena='1234')
         u2 = Usuario(nombre='user2', contrasena='1234')
@@ -50,6 +51,7 @@ class VistasTest(unittest.TestCase):
 # Se agrega pruebas unitarias para las notificaciones que recibe el usuario cuando se le comparte una cancion
 
     def test_usuario_notificacion(self):
+        print("Pruebas unitarias del feature recibir notificacion")
         c1 = Cancion(titulo='prueba1', minutos=2, segundos=5,interprete='p1')
         u1 = Usuario(nombre='user1', contrasena='1234')
         u2 = Usuario(nombre='user2', contrasena='1234')
@@ -59,6 +61,7 @@ class VistasTest(unittest.TestCase):
         c1.usuarios.append(u2)
         n_mensaje = "El usuario " + u1.nombre + " te ha compartido la cancion " + c1.titulo
         n_fecha = datetime.now()
+        print(n_mensaje)
         n_notificacion = Notificacion(mensaje=n_mensaje, fecha=n_fecha, cancioncompartida=c1.id, mensaje_leido=False)
         u2.notificaciones.append(n_notificacion)
         db.session.commit()
