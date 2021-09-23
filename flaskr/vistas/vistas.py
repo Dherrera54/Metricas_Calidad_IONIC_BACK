@@ -208,6 +208,7 @@ class VistaAlbum(Resource):
 # En esta vista se puede agregar o listar los usuarios a los que se comparte una cancion
 # Se actualiza la vista UsuariosCancionCompartida comp parte del Sprint 2
 # En esta actualizacion de crean las notificaciones para los usuarios con los que se ha compartido la cancion
+# Se corrije bad smells de long Function
 
 def usuarioNoExiste(nombres):
     for n in nombres:
