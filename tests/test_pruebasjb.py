@@ -4,7 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 import sys
 from os import path
 sys.path.append( path.dirname( path.dirname( path.abspath(__file__) ) ) )
-from flaskr.modelos import Usuario, db, Cancion, Notificacion
+from modelos import Usuario, db, Cancion, Notificacion
 from datetime import datetime
 
 
