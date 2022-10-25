@@ -24,6 +24,7 @@ jobs:
       - name: pruebas+coverage
         id: pruebas
         run: |
+          cd flaskr
           python -m coverage run -m unittest discover tests 
           python -m coverage xml -i 
       - name: SonarCloud Scan
